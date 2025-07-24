@@ -1,0 +1,1210 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delivery de Doces Delícias</title>
+<style>
+    :root {
+        --primary-color: #244334; /* Verde escuro principal */
+        --accent-color: #4CAF50; /* Verde para preços/sucesso */
+        --light-bg: #fdf8f5; /* Fundo suave */
+        --card-bg: #fff;
+        --text-color: #333;
+        --light-text: #666;
+        --border-color: #eee;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--light-bg);
+        color: var(--text-color);
+        line-height: 1.6;
+    }
+    header {
+        background-color: var(--primary-color);
+        color: white;
+        padding: 1.5rem 1rem;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
+    header h1 {
+        margin: 0;
+        font-size: 2.5rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+    header p {
+        margin-top: 0.5rem;
+        font-size: 1.1rem;
+    }
+
+    .profile-pic {
+        width: 120px; /* Tamanho da imagem de perfil */
+        height: 120px; /* Tamanho da imagem de perfil */
+        border-radius: 50%; /* Deixa a imagem redonda */
+        object-fit: cover; /* Garante que a imagem preencha o círculo sem distorcer */
+        margin-bottom: 1rem; /* Espaçamento abaixo da imagem */
+        border: 4px solid white; /* Borda branca para destaque */
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Sombra suave */
+    }
+
+    main {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .menu-section {
+        background-color: var(--card-bg);
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    h2 {
+        color: var(--primary-color);
+        text-align: center;
+        margin-bottom: 1.5rem;
+        font-size: 2rem;
+    }
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+    .product-item {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        overflow: hidden;
+        text-align: center;
+        background-color: var(--card-bg);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer; /* Adicionado para indicar que é clicável */
+        /* Sombra padrão para todos os produtos (cinza) */
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+    }
+    .product-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2); /* Sombra mais forte no hover */
+    }
+    .product-item img {
+        width: 100%;
+        height: 200px;
+        object-fit: contain;
+        border-bottom: 1px solid var(--border-color);
+    }
+    .product-info {
+        padding: 1rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    .product-info h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+        font-size: 1.4rem;
+    }
+    .product-info p {
+        font-size: 0.9rem;
+        color: var(--light-text);
+        margin-bottom: 1rem;
+    }
+    .product-price {
+        font-size: 1.3rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin-bottom: 1rem; /* Original margin */
+    }
+    /* Removido .add-to-cart-btn pois o botão será removido */
+
+    /* New styles for online status indicator */
+    .status-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #aaffaa; /* Light green for online status */
+        margin-top: 0.5rem;
+    }
+    .status-indicator .dot {
+        width: 10px;
+        height: 10px;
+        background-color: #00ff00; /* Bright green dot */
+        border-radius: 50%;
+        box-shadow: 0 0 5px #00ff00;
+    }
+
+    /* Modal styles (general for product detail and special offer) */
+    .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1000; /* Sit on top */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+        backdrop-filter: blur(5px); /* Blur background */
+        -webkit-backdrop-filter: blur(5px); /* Safari support */
+        padding-top: 60px; /* Location of the box */
+    }
+
+    .modal-content {
+        background-color: var(--card-bg);
+        margin: 5% auto; /* 5% from the top and centered */
+        padding: 2rem;
+        border: 1px solid #888;
+        border-radius: 8px;
+        width: 80%; /* Could be more or less, depending on screen size */
+        max-width: 500px; /* Max width for larger screens */
+        position: relative;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura/altura */
+    }
+
+    .close-button {
+        color: #aaa;
+        font-size: 28px;
+        font-weight: bold;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        cursor: pointer;
+        transition: color 0.2s ease-in-out;
+    }
+    .close-button:hover,
+    .close-button:focus {
+        color: var(--primary-color);
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* Styles for geolocation message in header */
+    #loading, #mensagem-local {
+        color: #aaffaa; /* Cor clara para o texto */
+        font-size: 1rem;
+        margin-top: 0.5rem;
+        text-align: center;
+        padding: 0.5rem;
+        border-radius: 5px;
+        background-color: rgba(0, 255, 0, 0.1); /* Fundo levemente verde */
+        display: none; /* Initially hidden, shown by JS */
+    }
+    #loading {
+        font-style: italic;
+    }
+    #mensagem-local strong {
+        color: #fff; /* Destacar o bairro/cidade */
+    }
+
+    /* Custom Geolocation Permission Modal */
+    .geolocation-modal {
+        display: flex; /* Initially flex to show it */
+        position: fixed;
+        z-index: 1001; /* Higher than other modals */
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.7); /* Darker overlay */
+        justify-content: center;
+        align-items: center;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .geolocation-modal-content {
+        background-color: var(--card-bg);
+        padding: 2rem;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .geolocation-modal-content p {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary-color);
+        font-weight: bold;
+    }
+
+    .geolocation-modal-content button {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s ease-in-out;
+        margin: 0.5rem;
+    }
+
+    .geolocation-modal-content button:hover {
+        background-color: #45a049;
+    }
+
+    #deny-location-btn {
+        background-color: #ccc;
+        color: var(--text-color);
+    }
+
+    #deny-location-btn:hover {
+        background-color: #bbb;
+    }
+
+    /* In-modal loading indicator */
+    #in-modal-loading {
+        font-size: 1.1rem;
+        color: var(--primary-color);
+        font-weight: bold;
+        margin-top: 1rem;
+        display: none; /* Hidden by default */
+    }
+
+    /* Delivery Time in Header */
+    .delivery-time {
+        font-size: 1rem;
+        color: #aaffaa; /* Cor clara para o texto */
+        margin-top: 0.5rem;
+        font-weight: bold;
+    }
+
+    /* Product Detail Modal Specific Styles */
+    #product-detail-modal .modal-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1.5rem;
+    }
+    #product-detail-modal img {
+        max-width: 80%;
+        height: auto;
+        max-height: 250px;
+        object-fit: contain;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    #product-detail-modal h3 {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    #product-detail-modal p {
+        font-size: 1rem;
+        color: var(--light-text);
+        margin-bottom: 1rem;
+    }
+    #product-detail-modal .product-price {
+        font-size: 1.6rem;
+        font-weight: bold;
+        color: var(--accent-color);
+        margin-bottom: 0.5rem; /* Adjusted margin for adjustment text */
+    }
+    .product-detail-adjustment { /* New style for adjustment text in modal */
+        font-size: 0.9rem;
+        font-weight: normal;
+        margin-bottom: 1.5rem;
+    }
+    .quantity-selector {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .quantity-selector button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        transition: background-color 0.2s ease-in-out;
+    }
+    .quantity-selector button:hover {
+        background-color: #1a3328;
+    }
+    .quantity-selector input {
+        width: 60px;
+        padding: 0.5rem;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+        font-size: 1.1rem;
+        -moz-appearance: textfield; /* Firefox */
+    }
+    .quantity-selector input::-webkit-outer-spin-button,
+    .quantity-selector input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .add-to-cart-from-modal-btn {
+        background-color: var(--accent-color);
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        width: 100%;
+        transition: background-color 0.2s ease-in-out;
+    }
+    .add-to-cart-from-modal-btn:hover {
+        background-color: #45a049;
+    }
+
+    /* Special Offer Modal Specific Styles */
+    #special-offer-modal .modal-content {
+        padding: 1.5rem;
+        text-align: center;
+    }
+    #special-offer-modal h3 {
+        font-size: 1.8rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+    #special-offer-modal .offer-description {
+        font-size: 1rem;
+        color: var(--light-text);
+        margin-bottom: 1.5rem;
+    }
+    .special-offer-options {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .option-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.8rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        background-color: #f9f9f9;
+    }
+    .option-item img {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 4px;
+        margin-right: 0.8rem;
+    }
+    .option-item span {
+        flex-grow: 1;
+        text-align: left;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+    .quantity-selector-small {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .quantity-selector-small button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.3rem 0.6rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.2s ease-in-out;
+    }
+    .quantity-selector-small button:hover {
+        background-color: #1a3328;
+    }
+    .quantity-selector-small input {
+        width: 40px;
+        padding: 0.3rem;
+        text-align: center;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        font-size: 0.9rem;
+        -moz-appearance: textfield;
+    }
+    .quantity-selector-small input::-webkit-outer-spin-button,
+    .quantity-selector-small input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .offer-summary {
+        background-color: #e6ffe6; /* Light green background */
+        border: 1px solid var(--accent-color);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .offer-summary p {
+        margin: 0.5rem 0;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+    .offer-summary span {
+        color: var(--accent-color);
+    }
+
+    /* Special Offer Seal */
+    .special-offer-seal {
+        position: absolute;
+        top: 10px;
+        right: -30px; /* Start off-screen */
+        background-color: #ff4500; /* Orange-red for attention */
+        color: white;
+        padding: 5px 30px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+        transform: rotate(45deg);
+        transform-origin: 100% 0%; /* Rotate from top-right corner */
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10;
+    }
+
+    /* Special Offer Product Item - Overrides default product-item shadow */
+    .product-item.special-offer {
+        position: relative;
+        overflow: hidden;
+        /* Sombra verde mais intensa e espalhada para a oferta especial */
+        box-shadow: 0 0 20px 8px rgba(76, 175, 80, 0.8); 
+        animation: pulse 2s infinite; /* Aplica a animação de pulsação */
+    }
+
+    /* Keyframes for pulsing effect - now includes the green base shadow */
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 20px 8px rgba(76, 175, 80, 0.8), 0 0 0 0 rgba(76, 175, 80, 0.6);
+        }
+        70% {
+            box-shadow: 0 0 20px 8px rgba(76, 175, 80, 0.8), 0 0 0 20px rgba(76, 175, 80, 0);
+        }
+        100% {
+            box-shadow: 0 0 20px 8px rgba(76, 175, 80, 0.8), 0 0 0 0 rgba(76, 175, 80, 0.6);
+        }
+    }
+
+    /* Price adjustment text colors */
+    .discount-text {
+        color: #dc3545; /* Red for discount */
+    }
+    .delivery-fee-text {
+        color: #ffc107; /* Orange for delivery fee */
+    }
+
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        header {
+            padding: 1rem;
+        }
+        header h1 {
+            font-size: 2rem;
+        }
+        main {
+            padding: 0 0.5rem;
+            margin: 1rem auto;
+        }
+        .menu-section {
+            padding: 1rem;
+        }
+        h2 {
+            font-size: 1.8rem;
+        }
+        .product-grid {
+            grid-template-columns: 1fr; /* Single column on smaller screens */
+        }
+        .product-item img {
+            height: 180px;
+        }
+        /* Removido .add-to-cart-btn responsive styles */
+
+        /* Modal responsive */
+        .modal-content {
+            width: 95%; /* Take more width on small screens */
+            margin: 20px auto; /* Adjust margin for better fit */
+            padding: 1rem; /* Reduzir o padding para telas menores */
+        }
+        .close-button {
+            font-size: 24px;
+            top: 5px;
+            right: 15px;
+        }
+
+        /* Product Detail Modal Responsive */
+        #product-detail-modal img {
+            max-height: 180px;
+        }
+        #product-detail-modal h3 {
+            font-size: 1.5rem;
+        }
+        #product-detail-modal .product-price {
+            font-size: 1.4rem;
+        }
+        .quantity-selector {
+            gap: 0.5rem;
+        }
+        .quantity-selector button {
+            padding: 0.4rem 0.8rem;
+            font-size: 1rem;
+        }
+        .quantity-selector input {
+            width: 50px;
+            font-size: 1rem;
+        }
+        .add-to-cart-from-modal-btn {
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        /* Special Offer Modal Responsive */
+        #special-offer-modal .modal-content {
+            padding: 1rem; /* Reduced padding for smaller screens */
+        }
+        #special-offer-modal h3 {
+            font-size: 1.6rem; /* Slightly smaller title */
+        }
+        #special-offer-modal .offer-description {
+            font-size: 0.9rem; /* Smaller description text */
+            margin-bottom: 1rem;
+        }
+        .special-offer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem; /* Reduced gap between options */
+        }
+        .option-item {
+            padding: 0.6rem; /* Reduced padding */
+            flex-direction: row; /* Keep horizontal layout */
+            align-items: center;
+            justify-content: space-between;
+        }
+        .option-item img {
+            width: 45px; /* Smaller image */
+            height: 45px; /* Smaller image */
+            margin-right: 0.5rem; /* Reduced margin */
+            margin-bottom: 0; /* Ensure no bottom margin from previous column layout */
+        }
+        .option-item span {
+            font-size: 0.9rem; /* Smaller text for product name */
+            text-align: left; /* Keep text left-aligned */
+            margin-bottom: 0; /* Ensure no bottom margin from previous column layout */
+        }
+        .quantity-selector-small button {
+            padding: 0.2rem 0.5rem; /* Smaller buttons */
+            font-size: 0.9rem;
+        }
+        .quantity-selector-small input {
+            width: 35px; /* Smaller input */
+            padding: 0.2rem;
+            font-size: 0.8rem;
+        }
+        .offer-summary {
+            padding: 0.8rem; /* Reduced padding */
+            margin-bottom: 1rem;
+        }
+        .offer-summary p {
+            font-size: 1rem; /* Slightly smaller summary text */
+        }
+        .add-to-cart-from-modal-btn {
+            padding: 0.9rem 1.8rem; /* Slightly smaller button */
+            font-size: 1rem;
+        }
+    }
+    @media (max-width: 480px) {
+        header h1 {
+            font-size: 1.8rem;
+        }
+        h2 {
+            font-size: 1.6rem;
+        }
+        .product-info h3 {
+            font-size: 1.2rem;
+        }
+        .product-price {
+            font-size: 1.1rem;
+        }
+        /* Removido .add-to-cart-btn responsive styles */
+        .modal-content {
+            padding: 0.8rem; /* Ainda mais reduzido para telas muito pequenas */
+        }
+        /* Further adjustments for very small screens */
+        .option-item img {
+            width: 40px;
+            height: 40px;
+        }
+        .option-item span {
+            font-size: 0.85rem;
+        }
+        .quantity-selector-small input {
+            width: 30px;
+            font-size: 0.75rem;
+        }
+    }
+</style>
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '890326999928111');
+fbq('track', 'PageView');
+</script></head>
+<!-- Meta Pixel Code -->
+
+<body><noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=890326999928111&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+<header>
+    <img src="images/Design-sem-nome.png" alt="Logo Ana Caramelo" class="profile-pic">
+    <h1>Ana Caramelo</h1>
+    <div class="status-indicator">
+        <span class="dot"></span>
+        <span>Aberto</span>
+    </div>
+    <div class="delivery-time">Entrega estimada de 15 a 25 minutos</div>
+    <!-- Elementos para a mensagem de geolocalização -->
+    <div id="loading">Carregando localização...</div>
+    <div id="mensagem-local"></div>
+</header>
+
+<main>
+    <section class="menu-section">
+        <h2>Nosso Cardápio</h2>
+        <div class="product-grid" id="product-list">
+            <!-- Products will be loaded here by JavaScript -->
+        </div>
+    </section>
+</main>
+
+<!-- The Product Detail Modal -->
+<div id="product-detail-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="close-product-detail-modal">�</span>
+        <img id="product-detail-image" src="/placeholder.svg" alt="Product Image">
+        <h3 id="product-detail-name"></h3>
+        <p id="product-detail-description"></p>
+        <span class="product-price">Preço Final: <span id="product-detail-final-price"></span></span>
+        <div id="product-detail-adjustment" class="product-detail-adjustment"></div> <!-- New element for adjustment text -->
+        <div class="quantity-selector">
+            <button id="decrease-quantity">-</button>
+            <input type="number" id="product-quantity" value="1" min="1">
+            <button id="increase-quantity">+</button>
+        </div>
+        <button class="add-to-cart-from-modal-btn" id="add-to-cart-from-modal">Comprar Agora</button>
+    </div>
+</div>
+
+<!-- The Special Offer Modal -->
+<div id="special-offer-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button" id="close-special-offer-modal">�</span>
+        <h3>Oferta Especial: </h3>
+        <p class="offer-description">Selecione 4 unidades entre Morango do Amor, Uva do Amor e Maracujá com Morango por apenas R$ 4,90 cada!</p>
+        <div class="special-offer-options">
+            <div class="option-item">
+                <img src="images/produto0.avif" alt="Morango do Amor">
+                <span>Morango do Amor</span>
+                <div class="quantity-selector-small">
+                    <button data-type="morango" class="decrease-offer-quantity">-</button>
+                    <input type="number" id="qty-morango" value="0" min="0" max="4">
+                    <button data-type="morango" class="increase-offer-quantity">+</button>
+                </div>
+            </div>
+            <div class="option-item">
+                <img src="images/Captura-de-Tela-2025-07-23-a-s-16-11-05.png" alt="Uva do Amor">
+                <span>Uva do Amor</span>
+                <div class="quantity-selector-small">
+                    <button data-type="uva" class="decrease-offer-quantity">-</button>
+                    <input type="number" id="qty-uva" value="0" min="0" max="4">
+                    <button data-type="uva" class="increase-offer-quantity">+</button>
+                </div>
+            </div>
+            <div class="option-item">
+                <img src="images/Captura-de-Tela-2025-07-23-a-s-16-14-23.png" alt="Maracujá com Morango">
+                <span>Maracujá com Morango</span>
+                <div class="quantity-selector-small">
+                    <button data-type="maracuja" class="decrease-offer-quantity">-</button>
+                    <input type="number" id="qty-maracuja" value="0" min="0" max="4">
+                    <button data-type="maracuja" class="increase-offer-quantity">+</button>
+                </div>
+            </div>
+        </div>
+        <div class="offer-summary">
+            <p>Total de Unidades Selecionadas: <span id="selected-units-count">0</span> / 4</p>
+            <p>Valor a Pagar: <span id="offer-total-price">R$ 0,00</span></p>
+        </div>
+        <button class="add-to-cart-from-modal-btn" id="add-offer-to-cart" disabled="">Confirmar dados de entrega</button>
+    </div>
+</div>
+
+<!-- Custom Geolocation Permission Modal -->
+<div id="geolocation-permission-modal" class="geolocation-modal">
+    <div class="geolocation-modal-content">
+        <p id="geolocation-prompt-text">Permita Localização para ver nossos revendedores mais próximos a você!</p>
+        <div id="geolocation-buttons">
+            <button id="allow-location-btn">Permitir Localização</button>
+            <button id="deny-location-btn">Agora Não</button>
+        </div>
+        <div id="in-modal-loading">Carregando localização...</div>
+    </div>
+</div>
+
+<script>
+    const products = [
+      {
+          id: 1,
+          name: "Oferta Especial: Morangos, Uvas e Maracujá com Morango",
+          description: "Escolha 4 unidades entre Morango do Amor, Uva do Amor e Maracujá com Morango por apenas R$ 4,90 cada!",
+          price: 4.90, // Price per unit in the offer
+          image: "https://i.postimg.cc/k5Z3PWwk/produto0.avif", // Main image for the offer
+          isSpecialOffer: true // Flag to identify special offer
+      },
+      {
+          id: 2,
+          name: "Bombom de Morango",
+          description: "Compre 3 Leve 4. Bombons irresistíveis com recheio de morango.",
+          price: 15.90,
+          image: "https://www.docesanacaramelo.online/images/produto1.jpg"
+      },
+      {
+          id: 3,
+          name: "Bombom Coração de Morango",
+          description: "Pague 2 Leve 3. Bombons em formato de coração com morango.",
+          price: 19.90,
+          image: "https://www.docesanacaramelo.online/images/produto2.jpg"
+      },
+      {
+          id: 4,
+          name: "10 Coxinhas de Brigadeiro",
+          description: "Sabores Morango e Uva. Uma explosão de sabor em cada mordida.",
+          price: 29.99,
+          image: "https://www.docesanacaramelo.online/images/produto3.jpg"
+      },
+      {
+          id: 5,
+          name: "Afogadinho Brownie de Nutella",
+          description: "120g de pura indulgência com Nutella.",
+          price: 18.90,
+          image: "https://www.docesanacaramelo.online/images/produto4.jpg"
+      },
+      {
+          id: 6,
+          name: "Cookie Tradicional",
+          description: "Compre 2 Leve 3. O clássico cookie macio e delicioso.",
+          price: 17.99,
+          image: "https://www.docesanacaramelo.online/images/produto7.jpg"
+      }
+    ];
+
+    const TARGET_PRICE = 19.60; // Define o preço alvo para todos os produtos
+    const CHECKOUT_URL = "https://checkout.vendeagora.com/api/public/shopify?product=576189465856&store=5761"; // URL de checkout unificada para todos os produtos
+
+    let currentProductInModal = null; // To store the product being viewed in the detail modal
+
+    const productListDiv = document.getElementById('product-list');
+
+    // Product Detail Modal elements
+    const productDetailModal = document.getElementById('product-detail-modal');
+    const closeProductDetailModalBtn = document.getElementById('close-product-detail-modal');
+    const productDetailImage = document.getElementById('product-detail-image');
+    const productDetailName = document.getElementById('product-detail-name');
+    const productDetailDescription = document.getElementById('product-detail-description');
+    const productDetailFinalPriceSpan = document.getElementById('product-detail-final-price'); // Changed ID
+    const productDetailAdjustmentDiv = document.getElementById('product-detail-adjustment'); // New element
+    const productQuantityInput = document.getElementById('product-quantity');
+    const decreaseQuantityBtn = document.getElementById('decrease-quantity');
+    const increaseQuantityBtn = document.getElementById('increase-quantity');
+    const addToCartFromModalBtn = document.getElementById('add-to-cart-from-modal');
+
+    // Special Offer Modal elements
+    const specialOfferModal = document.getElementById('special-offer-modal');
+    const closeSpecialOfferModalBtn = document.getElementById('close-special-offer-modal');
+    const qtyMorangoInput = document.getElementById('qty-morango');
+    const qtyUvaInput = document.getElementById('qty-uva');
+    const qtyMaracujaInput = document.getElementById('qty-maracuja');
+    const decreaseOfferQuantityBtns = document.querySelectorAll('.decrease-offer-quantity');
+    const increaseOfferQuantityBtns = document.querySelectorAll('.increase-offer-quantity');
+    const selectedUnitsCountSpan = document.getElementById('selected-units-count');
+    const offerTotalPriceSpan = document.getElementById('offer-total-price');
+    const addOfferToCartBtn = document.getElementById('add-offer-to-cart');
+
+    // Custom Geolocation Permission Modal elements
+    const geolocationPermissionModal = document.getElementById('geolocation-permission-modal');
+    const allowLocationBtn = document.getElementById('allow-location-btn');
+    const denyLocationBtn = document.getElementById('deny-location-btn');
+    const inModalLoading = document.getElementById('in-modal-loading');
+    const geolocationPromptText = document.getElementById('geolocation-prompt-text');
+    const geolocationButtons = document.getElementById('geolocation-buttons');
+
+
+    // Close modals when clicking outside of them
+    window.addEventListener('click', (event) => {
+        if (event.target == productDetailModal) {
+            productDetailModal.style.display = 'none';
+        }
+        if (event.target == specialOfferModal) {
+            specialOfferModal.style.display = 'none';
+        }
+    });
+
+    // Close the product detail modal when clicking on X
+    closeProductDetailModalBtn.addEventListener('click', () => {
+        productDetailModal.style.display = 'none';
+    });
+
+    // Close the special offer modal when clicking on X
+    closeSpecialOfferModalBtn.addEventListener('click', () => {
+        specialOfferModal.style.display = 'none';
+    });
+
+    function renderProducts() {
+        productListDiv.innerHTML = '';
+        products.forEach(product => {
+            const productItem = document.createElement('div');
+            productItem.classList.add('product-item');
+            // Adiciona o data-id ao productItem para identificar qual modal abrir
+            productItem.dataset.id = product.id; 
+
+            if (product.isSpecialOffer) {
+                productItem.classList.add('special-offer');
+                productItem.innerHTML += `<div class="special-offer-seal">Oferta!</div>`;
+            }
+
+            productItem.innerHTML += `
+                <img src="${product.image}" alt="${product.name}">
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <span class="product-price">${product.isSpecialOffer ? 'A partir de ' : ''}R$ ${product.price.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <!-- Botão "Comprar Agora" da listagem removido daqui -->
+            `;
+            productListDiv.appendChild(productItem);
+
+            // Adiciona o event listener ao productItem inteiro
+            productItem.addEventListener('click', (event) => {
+                const clickedProductId = parseInt(event.currentTarget.dataset.id);
+                const clickedProduct = products.find(p => p.id === clickedProductId);
+
+                if (clickedProduct && clickedProduct.isSpecialOffer) {
+                    openSpecialOfferModal();
+                } else if (clickedProduct) {
+                    openProductDetailModal(clickedProductId);
+                }
+            });
+        });
+    }
+
+    function openProductDetailModal(productId) {
+        const product = products.find(p => p.id === productId);
+        if (product) {
+            currentProductInModal = product; // Store the product
+
+            productDetailImage.src = product.image;
+            productDetailImage.alt = product.name;
+            productDetailName.textContent = product.name;
+            productDetailDescription.textContent = product.description;
+            
+            let finalPrice = product.price;
+            let adjustmentText = '';
+
+            if (product.price > TARGET_PRICE) {
+                const discount = product.price - TARGET_PRICE;
+                adjustmentText = `(Desconto de R$ ${discount.toFixed(2).replace('.', ',')})`;
+                finalPrice = TARGET_PRICE;
+            } else if (product.price < TARGET_PRICE) {
+                const deliveryFee = TARGET_PRICE - product.price;
+                adjustmentText = `(Taxa de Entrega: R$ ${deliveryFee.toFixed(2).replace('.', ',')})`;
+                finalPrice = TARGET_PRICE;
+            } else {
+                finalPrice = TARGET_PRICE; // Already at target price
+            }
+
+            productDetailFinalPriceSpan.textContent = `R$ ${finalPrice.toFixed(2).replace('.', ',')}`;
+            productDetailAdjustmentDiv.textContent = adjustmentText;
+            productDetailAdjustmentDiv.className = 'product-detail-adjustment'; // Reset classes
+            if (product.price > TARGET_PRICE) {
+                productDetailAdjustmentDiv.classList.add('discount-text');
+            } else if (product.price < TARGET_PRICE) {
+                productDetailAdjustmentDiv.classList.add('delivery-fee-text');
+            }
+
+            productQuantityInput.value = 1; // Reset quantity to 1
+            productDetailModal.style.display = 'block';
+        }
+    }
+
+    // Quantity selector logic for regular product detail modal
+    decreaseQuantityBtn.addEventListener('click', () => {
+        let quantity = parseInt(productQuantityInput.value);
+        if (quantity > 1) {
+            productQuantityInput.value = quantity - 1;
+        }
+    });
+
+    increaseQuantityBtn.addEventListener('click', () => {
+        let quantity = parseInt(productQuantityInput.value);
+        productQuantityInput.value = quantity + 1;
+    });
+
+    productQuantityInput.addEventListener('change', () => {
+        let quantity = parseInt(productQuantityInput.value);
+        if (isNaN(quantity) || quantity < 1) {
+            productQuantityInput.value = 1;
+        }
+    });
+
+    // ESTE É O BOTÃO DENTRO DO MODAL DE DETALHES DO PRODUTO QUE REDIRECIONA
+    addToCartFromModalBtn.addEventListener('click', () => {
+        window.location.href = CHECKOUT_URL;
+        productDetailModal.style.display = 'none'; // Close product detail modal
+        currentProductInModal = null; // Clear current product
+    });
+
+    // --- Special Offer Modal Logic ---
+    const OFFER_UNIT_PRICE = 4.90;
+    const REQUIRED_UNITS = 4;
+    // CHECKOUT_URL is already defined at the top
+
+    function openSpecialOfferModal() {
+        specialOfferModal.style.display = 'block';
+        // Reset quantities
+        qtyMorangoInput.value = 0;
+        qtyUvaInput.value = 0;
+        qtyMaracujaInput.value = 0;
+        updateSpecialOfferSummary();
+    }
+
+    function updateSpecialOfferSummary() {
+        const qtyMorango = parseInt(qtyMorangoInput.value);
+        const qtyUva = parseInt(qtyUvaInput.value);
+        const qtyMaracuja = parseInt(qtyMaracujaInput.value);
+
+        const totalUnits = qtyMorango + qtyUva + qtyMaracuja;
+        
+        const totalPrice = totalUnits * OFFER_UNIT_PRICE;
+
+        selectedUnitsCountSpan.textContent = totalUnits;
+        offerTotalPriceSpan.textContent = `R$ ${totalPrice.toFixed(2).replace('.', ',')}`;
+
+        // Enable/disable add to cart button based on total units
+        if (totalUnits === REQUIRED_UNITS) {
+            addOfferToCartBtn.disabled = false;
+            // The button text is now static in HTML, no need to change here
+        } else {
+            addOfferToCartBtn.disabled = true;
+        }
+
+        // Update max values for inputs to ensure total doesn't exceed REQUIRED_UNITS
+        qtyMorangoInput.max = REQUIRED_UNITS - (qtyUva + qtyMaracuja);
+        qtyUvaInput.max = REQUIRED_UNITS - (qtyMorango + qtyMaracuja);
+        qtyMaracujaInput.max = REQUIRED_UNITS - (qtyMorango + qtyUva);
+
+        // Ensure current value doesn't exceed new max (important for direct input)
+        if (parseInt(qtyMorangoInput.value) > parseInt(qtyMorangoInput.max)) {
+            qtyMorangoInput.value = qtyMorangoInput.max;
+        }
+        if (parseInt(qtyUvaInput.value) > parseInt(qtyUvaInput.max)) {
+            qtyUvaInput.value = qtyUvaInput.max;
+        }
+        if (parseInt(qtyMaracujaInput.value) > parseInt(qtyMaracujaInput.max)) {
+            qtyMaracujaInput.value = qtyMaracujaInput.max;
+        }
+    }
+
+    // Event listeners for quantity selectors in special offer modal
+    decreaseOfferQuantityBtns.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const type = event.target.dataset.type;
+            let input;
+            if (type === 'morango') input = qtyMorangoInput;
+            else if (type === 'uva') input = qtyUvaInput;
+            else if (type === 'maracuja') input = qtyMaracujaInput;
+
+            let quantity = parseInt(input.value);
+            if (quantity > 0) {
+                input.value = quantity - 1;
+                updateSpecialOfferSummary();
+            }
+        });
+    });
+
+    increaseOfferQuantityBtns.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const type = event.target.dataset.type;
+            let input;
+            if (type === 'morango') input = qtyMorangoInput;
+            else if (type === 'uva') input = qtyUvaInput;
+            else if (type === 'maracuja') input = qtyMaracujaInput;
+
+            let quantity = parseInt(input.value);
+            const totalUnits = parseInt(selectedUnitsCountSpan.textContent);
+            if (totalUnits < REQUIRED_UNITS) {
+                input.value = quantity + 1;
+                updateSpecialOfferSummary();
+            }
+        });
+    });
+
+    // Handle direct input changes for quantity in special offer modal
+    qtyMorangoInput.addEventListener('change', updateSpecialOfferSummary);
+    qtyUvaInput.addEventListener('change', updateSpecialOfferSummary);
+    qtyMaracujaInput.addEventListener('change', updateSpecialOfferSummary);
+
+
+    // ESTE É O BOTÃO DENTRO DO MODAL DA OFERTA ESPECIAL QUE REDIRECIONA
+    addOfferToCartBtn.addEventListener('click', () => {
+        const totalUnits = parseInt(selectedUnitsCountSpan.textContent);
+        if (totalUnits === REQUIRED_UNITS) {
+            window.location.href = CHECKOUT_URL; // Use the unified CHECKOUT_URL
+        } else {
+            alert("Por favor, selecione exatamente 4 unidades para a oferta especial.");
+        }
+    });
+    // --- End Special Offer Modal Logic ---
+
+
+    // Initial render
+    renderProducts();
+
+
+    // --- Código da API de Geolocalização ---
+    const fallbackLocationMessage = "Loja parceira a 2.1km de você";
+
+    async function detectarLocalizacao() {
+        const mensagem = document.getElementById("mensagem-local");
+        const loading = document.getElementById("loading");
+
+        loading.style.display = 'block'; // Show header loading message
+        loading.innerHTML = "Carregando localização...";
+        mensagem.innerHTML = ""; // Clear previous message
+        mensagem.style.display = 'none'; // Hide success message initially
+
+        console.log("Attempting to detect location...");
+
+        if (!navigator.geolocation) {
+            loading.innerHTML = fallbackLocationMessage;
+            loading.style.display = 'block';
+            mensagem.style.display = 'none';
+            console.error("Geolocation not supported by browser. Displaying fallback message.");
+            // Close modal after fallback
+            setTimeout(() => {
+                geolocationPermissionModal.style.display = 'none';
+                inModalLoading.style.display = 'none';
+                geolocationPromptText.style.display = 'block';
+                geolocationButtons.style.display = 'flex';
+            }, 2000); // 2-second delay before closing
+            return;
+        }
+
+        console.log("Geolocation supported. Requesting current position...");
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                console.log("Geolocation success:", position);
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                try {
+                    console.log(`Fetching address from Nominatim for lat: ${lat}, lon: ${lon}`);
+                    const nominatimUrl = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat},&lon=${lon}`;
+                    const resposta = await fetch(nominatimUrl);
+
+                    if (!resposta.ok) {
+                        throw new Error(`HTTP error! status: ${resposta.status}`);
+                    }
+
+                    const dados = await resposta.json();
+                    console.log("Nominatim API response:", dados);
+
+                    const address = dados.address;
+                    const bairro = address.suburb || address.neighbourhood || address.city_district || "sua região";
+                    const cidade = address.city || address.town || dados.address.city_district || "sua cidade"; // Adjusted for better city detection
+
+                    loading.style.display = "none"; // Hide header loading
+                    mensagem.innerHTML = `🎉 Temos um restaurante parceiro com entrega rápida em <strong>${bairro}</strong>, ${cidade}!`;
+                    mensagem.style.display = 'block'; // Show header success message
+                } catch (erro) {
+                    console.error("Error fetching address from Nominatim. Displaying fallback message:", erro);
+                    loading.innerHTML = fallbackLocationMessage;
+                    loading.style.display = 'block';
+                    mensagem.style.display = 'none';
+                } finally {
+                    // Close modal after success/error
+                    setTimeout(() => {
+                        geolocationPermissionModal.style.display = 'none';
+                        inModalLoading.style.display = 'none';
+                        geolocationPromptText.style.display = 'block';
+                        geolocationButtons.style.display = 'flex';
+                    }, 2000); // 2-second delay before closing
+                }
+            },
+            (erro) => {
+                console.error("Geolocation error. Displaying fallback message:", erro);
+                loading.innerHTML = fallbackLocationMessage;
+                loading.style.display = 'block';
+                mensagem.style.display = 'none';
+                // Close modal after error
+                setTimeout(() => {
+                    geolocationPermissionModal.style.display = 'none';
+                    inModalLoading.style.display = 'none';
+                    geolocationPromptText.style.display = 'block';
+                    geolocationButtons.style.display = 'flex';
+                }, 2000); // 2-second delay before closing
+            },
+            {
+                enableHighAccuracy: true, // Tenta obter uma posição mais precisa
+                timeout: 10000,          // Tempo limite de 10 segundos
+                maximumAge: 0            // Não usa posições em cache
+            }
+        );
+    }
+
+    // Event listeners for the custom geolocation permission modal
+    allowLocationBtn.addEventListener('click', () => {
+        geolocationPromptText.style.display = 'none'; // Hide prompt text
+        geolocationButtons.style.display = 'none'; // Hide buttons
+        inModalLoading.style.display = 'block'; // Show in-modal loading
+
+        // Call geolocation function immediately
+        detectarLocalizacao();
+    });
+
+    denyLocationBtn.addEventListener('click', () => {
+        geolocationPermissionModal.style.display = 'none'; // Just hide the modal
+        const loading = document.getElementById("loading");
+        loading.innerHTML = fallbackLocationMessage; // Show fallback message on deny
+        loading.style.display = 'block'; // Ensure it's visible
+        document.getElementById("mensagem-local").style.display = 'none'; // Hide the success message div
+
+        // Reset modal state in case it's opened again
+        inModalLoading.style.display = 'none';
+        geolocationPromptText.style.display = 'block';
+        geolocationButtons.style.display = 'flex';
+    });
+
+    // --- Fim do Código da API de Geolocalização ---
+
+</script>
+
+
+</body></html>
